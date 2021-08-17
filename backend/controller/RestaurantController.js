@@ -60,6 +60,18 @@ module.exports = {
         res.status(200)
         const response = responseService.success({msg: 'Reserve Table successfully', payload: bookTable})
         return response;
+    },
+    getTable: function (req, res) {
+        return new Promise(async (resolve, reject) => {
+            const { restaurantId} = req.userData;
+            const bookTable  = await RestaurantModel.findOne({
+                _id: restaurantId
+            })
+            res.status(200)
+            const response = await responseService.success({msg: 'Table Data get successfully', payload: bookTable})
+            console.log('@@response', response)
+            resolve(response);
+        })
     }
 }
 

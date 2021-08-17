@@ -1,5 +1,5 @@
 module.exports = {
-    success: function (req, res) {
+    success: function (req) {
         let response = {}
         response.status = 'success';
         response.success  = true;
