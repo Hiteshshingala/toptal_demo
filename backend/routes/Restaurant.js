@@ -20,6 +20,13 @@ router.get('/', AuthToken,  async function (req, res, next) {
 
 })
 
+router.post('/tableData', AuthToken,  async function (req, res, next) {
+  // create a new promise inside of the async function
+  let data = await RestaurantController.getRestaurantsReservationData(req, res);
+  res.send(data)
+
+})
+
 router.post('/reserveTable', AuthToken,  async function (req, res, next) {
   // create a new promise inside of the async function
   let data = await RestaurantController.bookTable(req, res);

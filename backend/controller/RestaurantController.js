@@ -72,6 +72,21 @@ module.exports = {
             console.log('@@response', response)
             resolve(response);
         })
+    },
+
+    getRestaurantsReservationData: function (req, res) {
+        return new Promise(async (resolve, reject) => {
+            const { refId } = req.body;
+            const { restaurantId} = req.userData;
+            const reservationData  = await ReservationModel.find({
+                restaurantId: restaurantId,
+                tableId: refId,
+            })
+            res.status(200)
+            const response = await responseService.success({msg: 'Table Data get successfully', payload: reservationData})
+            console.log('@@response', response)
+            resolve(response);
+        })
     }
 }
 
