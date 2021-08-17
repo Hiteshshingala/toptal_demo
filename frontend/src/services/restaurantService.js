@@ -17,4 +17,21 @@ const addTable = async (data = {}) => {
     }
   return false;  
 }
-export { addTable };
+
+const getTableData = async (data = {}) => {
+    let url = APIs.base_Url + 'restaurant/';
+    const method = "get";
+    const response = await api({
+        url: url,
+        method,
+        body: {},
+        isTokenPass: true
+    });
+
+    if (response && response.status && response.status === 200) {
+        const { data } = response;
+        return data;
+    }
+  return false;  
+}
+export { addTable, getTableData };
