@@ -34,4 +34,21 @@ const getTableData = async (data = {}) => {
     }
   return false;  
 }
-export { addTable, getTableData };
+
+const getTableBookings = async (data = {}) => {
+    let url = APIs.base_Url + 'restaurant/tableData';
+    const method = "post";
+    const response = await api({
+        url: url,
+        method,
+        body: data,
+        isTokenPass: true
+    });
+
+    if (response && response.status && response.status === 200) {
+        const { data } = response;
+        return data;
+    }
+  return false;  
+}
+export { addTable, getTableData, getTableBookings };
