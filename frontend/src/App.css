@@ -36,3 +36,17 @@
     transform: rotate(360deg);
   }
 }
+
+.modal-footer{
+  padding-bottom: 0!important;
+}
+.modal-content{
+  padding: 1rem;
+}
+.error-class{
+  color: red
+}
+
+.form-group {
+  margin-top:1rem
+}

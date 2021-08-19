@@ -51,4 +51,38 @@ const getTableBookings = async (data = {}) => {
     }
   return false;  
 }
-export { addTable, getTableData, getTableBookings };
+
+const reserveTables = async (data = {}) => {
+    let url = APIs.base_Url + 'restaurant/reserveTable';
+    const method = "post";
+    const response = await api({
+        url: url,
+        method,
+        body: data,
+        isTokenPass: true
+    });
+
+    if (response && response.status && response.status === 200) {
+        const { data } = response;
+        return data;
+    }
+  return false;  
+}
+
+const deleteTables = async (data) => {
+    let url = APIs.base_Url + `restaurant/${data.refId}`;
+    const method = "delete";
+    const response = await api({
+        url: url,
+        method,
+        body: data,
+        isTokenPass: true
+    });
+
+    if (response && response.status && response.status === 200) {
+        const { data } = response;
+        return data;
+    }
+  return false;  
+}
+export { addTable, getTableData, getTableBookings, reserveTables, deleteTables };

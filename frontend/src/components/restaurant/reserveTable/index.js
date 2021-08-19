@@ -6,8 +6,8 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css";
-import { addTable, getTableData, getTableBookings } from "../../../services/restaurantService";
-
+import { addTable, getTableData, getTableBookings, reserveTables } from "../../../services/restaurantService";
+import moment from 'moment-timezone'
 
 function ReserveTable() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,6 +15,7 @@ function ReserveTable() {
   const [modelData, setModelData] = useState("");
   const [keyboard, setKeyboard] = useState(true);
   const [restaurantsData, setRestaurantsData] = useState({});
+  const [dateSlot, setDateSlot] = useState([]);
   const openModal = (refId, noOfSeats, name) => {
     setIsModalOpen(true);
     setRefId(refId);
@@ -22,7 +23,7 @@ function ReserveTable() {
       refId: refId,
       noOfSeats: noOfSeats,
     });
-    getTableAvailability({refId: refId});
+    getTableAvailability({refId: refId, date: moment().utc().format('YYYY-MM-DD')});
   };
   const closeModal = () => {
     setIsModalOpen(false);
@@ -50,11 +51,14 @@ function ReserveTable() {
       resData.payload &&
       resData.payload.length > 0 
     ) {
-      let data = {};
-      resData.payload.bookings.forEach((booking) => {
-        data[booking.tableNo] = booking.noOfSeats;
-      });
-      setRestaurantsData(data);
+      let _excludeTimeSlot =  [];
+      resData.payload.forEach(_date => {
+        if(moment(_date.time).isSame(moment(body.date), 'day')) {
+          let a = new Date(_date.time);
+          _excludeTimeSlot.push(a)
+        }
+      })
+      setDateSlot(_excludeTimeSlot);
     }
   };
 
@@ -62,22 +66,14 @@ function ReserveTable() {
     getRestaurantsData();
   }, []);
 
-  const findNoOfSeats = (tableId) => {
-    if (tableId && restaurantsData[tableId]) {
-      return restaurantsData[tableId];
-    } else {
-      return 0;
-    }
-  };
-
     const handleSubmit = async (value) => {
         const data = {
           refId: value.refId,
           noOfSeats: value.noOfSeats,
-          date: value.date,
+          reserveTime: moment(value.reserveTime).utc(),
         };
     
-        const response ={} // await addTable({ ...data });
+        const response = await reserveTables({ ...data });
         if (response && response.success) {
           toast.success(response.msg);
         } else {
@@ -88,31 +84,35 @@ function ReserveTable() {
     let handleColor = (time) => {
       return time.getHours() > 12 ? "text-success" : "text-error";
     };
+
+    const changedata = (selectedDate) => {
+        getTableAvailability({refId: refId, date: moment(selectedDate).utc().format('YYYY-MM-DD')});
+
+    }
   
   
     const restaurantSchema = Yup.object().shape({
-        noOfSeats: Yup.string().required("Please No of seats"),
-        // name: Yup.string().required("Please Enter Name")
+        noOfSeats: Yup.string().required("Please Enter No of seats"),
+        reserveTime: Yup.string().required("Please select date and time")
     });
-
     return (
         <>
             <Container>
                 {Array.from(Array(15).keys()).map(rowIndex => (
-                    <Row>
+                    <Row key={`table_${rowIndex}`}>
                       {Array.from(Array(10).keys()).map(colIndex => (
-                        <Col onClick={() => {openModal(`table_${rowIndex}${colIndex}`, 0, 'name')}} >Table_{rowIndex}{colIndex}</Col>
+                        <Col onClick={() => {openModal(`table_${rowIndex}${colIndex}`, 0, 'name')}} key={`table_${rowIndex}${colIndex}`} >Table_{rowIndex}{colIndex}</Col>
                       ))}
                     </Row>
                 ))}
             </Container>
-            <Modal show={isModalOpen} toggle={closeModal} backdrop={true} onHide={closeModal} keyboard={keyboard}>
+            <Modal show={isModalOpen} backdrop={true} onHide={closeModal} keyboard={keyboard}>
                 <div>
                 <Formik
               initialValues={{
                 refId: refId,
                 noOfSeats: "",
-                date: ""
+                reserveTime: ""
               }}
               onSubmit={handleSubmit}
               validationSchema={restaurantSchema}
@@ -140,49 +140,44 @@ function ReserveTable() {
                     type="text"
                     name="noOfSeats"
                     className="form-control"
-                  />
+                    />
                   <ErrorMessage
                     className="error-class"
                     name="noOfSeats"
                     component="div"
-                  />
+                    />
                 </div>
-                <div className="form-group col-3 mb-2">
+                <div className="form-group col-6 mb-4">
+                  <label>Time</label>
                     <DatePicker 
-                      selected={values.startDate}
-                      dateFormat="MMMM d, yyyy"
+                      selected={values.reserveTime}
+                      dateFormat="MMMM d yyyy HH:mm aa"
                       className="form-control"
-                      name="date"
+                      name="reserveTime"
                       showTimeSelect
                       timeFormat="HH:mm"
                       timeIntervals={30}
                       timeCaption="time"
                       timeClassName={handleColor}
-                      onChange={date => setFieldValue('date', date)}
+                      onChange={date => { setFieldValue('reserveTime', date); changedata(date)}}
+                      minDate={moment().toDate()}
+                      excludeTimes={dateSlot}
+                    />
+                        <ErrorMessage
+                    className="error-class"
+                    name="reserveTime"
+                    component="div"
                     />
                   </div>
-{/* 
-                <div className="form-group">
-                  <label>name</label>
-                  <Field
-                    type="text"
-                    name="name"
-                    className="form-control"
-                  />
-                  <ErrorMessage
-                    className="error-class"
-                    name="name"
-                    component="div"
-                  />
-                </div> */}
-                
-                <button type="submit" className="btn btn-dark btn-lg btn-block">
-                  Submit
-                </button>
-                
-                <button type="button" onClick={closeModal} className="btn btn-dark btn-lg btn-block">
-                  cancel
-                </button>
+                <div className="modal-footer">                
+                  <button type="submit" className="btn btn-primary  btn-lg btn-block">
+                    Submit
+                  </button>
+                  
+                  <button type="button" onClick={closeModal} className="btn btn-dark btn-lg btn-block">
+                    cancel
+                  </button>
+                </div>
                 
               </Form>
             )}

@@ -15,7 +15,6 @@ const Register = (pops) => {
     };
 
     const response = await Sign_Up({ data });
-    debugger
     if (response && response.success) {
       const token = response.tokendata;
       localStorage.setItem('jwt', token);
@@ -102,16 +101,16 @@ const Register = (pops) => {
                 </div>
 
                 
-                <button type="submit" className="btn btn-dark btn-lg btn-block">
+                <button type="submit" className="btn btn-dark btn-lg btn-block mt-4">
                   Submit
                 </button>
                 <p className="forgot-password text-right">
-                  go to{" "}
+                  I have account{" "}
                   <span
                     className="cursor-pointer"
-                    onClick={() => pops.history.push("/sign-up")}
+                    onClick={() => pops.history.push("/login")}
                   >
-                    sign up?
+                    login?
                   </span>
                 </p>
               </Form>

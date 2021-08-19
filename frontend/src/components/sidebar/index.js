@@ -15,7 +15,7 @@ function SideBar(props) {
         >
             <div className="sidebar-sticky"></div>
         <Nav.Item>
-            <Nav.Link eventKey="/dashboard">Tables</Nav.Link>
+            <Nav.Link eventKey="/dashboard">Update Tables</Nav.Link>
         </Nav.Item>
         <Nav.Item>
             <Nav.Link eventKey="booktable">Book Table</Nav.Link>

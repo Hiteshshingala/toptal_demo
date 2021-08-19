@@ -7,7 +7,11 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 
 // import Dropdown from 'react-bootstrap/Dropdown'
 import "./restaurantLayout.css";
-import { addTable, getTableData } from "../../../services/restaurantService";
+import {
+  addTable,
+  getTableData,
+  deleteTables,
+} from "../../../services/restaurantService";
 
 function RestaurantLayout(pops) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -59,6 +63,7 @@ function RestaurantLayout(pops) {
       newData[value["refId"]] = value["noOfSeats"];
       setRestaurantsData({ ...restaurantsData, ...newData });
       toast.success(response.msg);
+      closeModal();
     } else {
       toast.error(response.msg);
     }
@@ -72,6 +77,22 @@ function RestaurantLayout(pops) {
     }
   };
 
+  const deleteTable = async (tableId) => {
+    const data = {
+      refId: modelData.refId,
+    };
+    const response = await deleteTables({ ...data });
+    if (response && response.success) {
+      let oldData = restaurantsData;
+      oldData[modelData.refId] = 0;
+      setRestaurantsData(oldData);
+      toast.success(response.msg);
+      closeModal();
+    } else {
+      toast.error(response.msg);
+    }
+  };
+
   const restaurantSchema = Yup.object().shape({
     noOfSeats: Yup.string().required("Please No of seats"),
   });
@@ -80,7 +101,7 @@ function RestaurantLayout(pops) {
     <>
       <Container>
         {Array.from(Array(15).keys()).map((rowIndex) => (
-          <Row>
+          <Row key={`table_${rowIndex}`}>
             {Array.from(Array(10).keys()).map((colIndex) => (
               <Col
                 onClick={() => {
@@ -90,13 +111,14 @@ function RestaurantLayout(pops) {
                     "name"
                   );
                 }}
+                key={`table_${rowIndex}${colIndex}`}
               >
                 <div>
-                  Table_{rowIndex}
+                  TableId: Table_{rowIndex}
                   {colIndex}
                 </div>
                 <div>
-                  No of Seats {findNoOfSeats(`table_${rowIndex}${colIndex}`)}
+                  Seats :{findNoOfSeats(`table_${rowIndex}${colIndex}`)}
                 </div>
               </Col>
             ))}
@@ -105,7 +127,6 @@ function RestaurantLayout(pops) {
       </Container>
       <Modal
         show={isModalOpen}
-        toggle={closeModal}
         backdrop={true}
         onHide={closeModal}
         keyboard={keyboard}
@@ -150,32 +171,32 @@ function RestaurantLayout(pops) {
                     component="div"
                   />
                 </div>
-                {/* 
-                <div className="form-group">
-                  <label>name</label>
-                  <Field
-                    type="text"
-                    name="name"
-                    className="form-control"
-                  />
-                  <ErrorMessage
-                    className="error-class"
-                    name="name"
-                    component="div"
-                  />
-                </div> */}
+                <div className="modal-footer">
+                  {modelData.noOfSeats > 0 ? (
+                    <button
+                      type="button"
+                      onClick={deleteTable}
+                      className="btn btn-danger  btn-lg btn-block"
+                    >
+                      delete
+                    </button>
+                  ) : null}
 
-                <button type="submit" className="btn btn-dark btn-lg btn-block">
-                  Submit
-                </button>
+                  <button
+                    type="submit"
+                    className="btn btn-primary  btn-lg btn-block"
+                  >
+                    Submit
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="btn btn-dark btn-lg btn-block"
-                >
-                  cancel
-                </button>
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    className="btn btn-dark btn-lg btn-block"
+                  >
+                    cancel
+                  </button>
+                </div>
               </Form>
             )}
           </Formik>
