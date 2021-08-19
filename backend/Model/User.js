@@ -13,7 +13,7 @@ var UserSchema = new Schema({
     },
     isverified:{
         type:Boolean,
-        default: false
+        default: true
     },
     managerName: {
         type: String
