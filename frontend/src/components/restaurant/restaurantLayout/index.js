@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { Container, Row, Col, Modal, Dropdown } from "react-bootstrap";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 // import Dropdown from 'react-bootstrap/Dropdown'
 import "./restaurantLayout.css";
 import {
@@ -97,111 +97,142 @@ function RestaurantLayout(pops) {
     noOfSeats: Yup.string().required("Please No of seats"),
   });
 
+  const onDragEnd = (result) => {
+    if (!result.destination) {
+        return;
+    }
+    console.log('@@result', result)
+    // const items = reorder(
+    //     itemData,
+    //     result.source.index,
+    //     result.destination.index
+    // );
+    // setItemData(items);
+}
+
   return (
     <>
-      <Container>
-        {Array.from(Array(15).keys()).map((rowIndex) => (
-          <Row key={`table_${rowIndex}`}>
-            {Array.from(Array(10).keys()).map((colIndex) => (
-              <Col
-                onClick={() => {
-                  openModal(
-                    `table_${rowIndex}${colIndex}`,
-                    findNoOfSeats(`table_${rowIndex}${colIndex}`),
-                    "name"
-                  );
-                }}
-                key={`table_${rowIndex}${colIndex}`}
-              >
-                <div>
-                  TableId: Table_{rowIndex}
-                  {colIndex}
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Container>
+          {Array.from(Array(15).keys()).map((rowIndex) => (
+            <Droppable droppableId="droppable">
+              {(provided, snapshot) => (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                  <Row key={`table_${rowIndex}`}>
+                    {Array.from(Array(10).keys()).map((colIndex, index) => (
+                      // {parseInt(`${rowIndex}${colIndex}`)}
+                      <Draggable
+                        key={`table_${rowIndex}${colIndex}`}
+                        draggableId={parseInt(`${rowIndex}${colIndex}`).toString()}
+                        index={`${rowIndex}${colIndex}`}
+                      >
+                        {(provided, snapshot) => (
+                          <Col
+                            onClick={() => {
+                              openModal(
+                                `table_${rowIndex}${colIndex}`,
+                                findNoOfSeats(`table_${rowIndex}${colIndex}`),
+                                "name"
+                              );
+                            }}
+                            key={`table_${rowIndex}${colIndex}`}
+                          >
+                            <div>
+                              TableId: Table_{rowIndex}
+                              {colIndex}
+                            </div>
+                            <div>
+                              Seats :
+                              {findNoOfSeats(`table_${rowIndex}${colIndex}`)}
+                            </div>
+                          </Col>
+                        )}
+                      </Draggable>
+                    ))}
+                  </Row>
                 </div>
-                <div>
-                  Seats :{findNoOfSeats(`table_${rowIndex}${colIndex}`)}
-                </div>
-              </Col>
-            ))}
-          </Row>
-        ))}
-      </Container>
-      <Modal
-        show={isModalOpen}
-        backdrop={true}
-        onHide={closeModal}
-        keyboard={keyboard}
-      >
-        <div>
-          <Formik
-            initialValues={{
-              refId: modelData.refId,
-              noOfSeats: modelData.noOfSeats,
-              name: "",
-            }}
-            onSubmit={handleSubmit}
-            validationSchema={restaurantSchema}
-          >
-            {({ isSubmitting }) => (
-              <Form>
-                <div className="form-group">
-                  <label>Ref ID</label>
-                  <Field
-                    type="text"
-                    name="refId"
-                    className="form-control"
-                    disabled={true}
-                  />
-                  <ErrorMessage
-                    className="error-class"
-                    name="refId"
-                    component="div"
-                  />
-                </div>
+              )}
+            </Droppable>
+          ))}
+        </Container>
+        <Modal
+          show={isModalOpen}
+          backdrop={true}
+          onHide={closeModal}
+          keyboard={keyboard}
+        >
+          <div>
+            <Formik
+              initialValues={{
+                refId: modelData.refId,
+                noOfSeats: modelData.noOfSeats,
+                name: "",
+              }}
+              onSubmit={handleSubmit}
+              validationSchema={restaurantSchema}
+            >
+              {({ isSubmitting }) => (
+                <Form>
+                  <div className="form-group">
+                    <label>Ref ID</label>
+                    <Field
+                      type="text"
+                      name="refId"
+                      className="form-control"
+                      disabled={true}
+                    />
+                    <ErrorMessage
+                      className="error-class"
+                      name="refId"
+                      component="div"
+                    />
+                  </div>
 
-                <div className="form-group">
-                  <label>No of Seat</label>
-                  <Field
-                    type="text"
-                    name="noOfSeats"
-                    className="form-control"
-                  />
-                  <ErrorMessage
-                    className="error-class"
-                    name="noOfSeats"
-                    component="div"
-                  />
-                </div>
-                <div className="modal-footer">
-                  {modelData.noOfSeats > 0 ? (
+                  <div className="form-group">
+                    <label>No of Seat</label>
+                    <Field
+                      type="text"
+                      name="noOfSeats"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      className="error-class"
+                      name="noOfSeats"
+                      component="div"
+                    />
+                  </div>
+                  <div className="modal-footer">
+                    {modelData.noOfSeats > 0 ? (
+                      <button
+                        type="button"
+                        onClick={deleteTable}
+                        className="btn btn-danger  btn-lg btn-block"
+                      >
+                        delete
+                      </button>
+                    ) : null}
+
+                    <button
+                      type="submit"
+                      className="btn btn-primary  btn-lg btn-block"
+                    >
+                      Submit
+                    </button>
+
                     <button
                       type="button"
-                      onClick={deleteTable}
-                      className="btn btn-danger  btn-lg btn-block"
+                      onClick={closeModal}
+                      className="btn btn-dark btn-lg btn-block"
                     >
-                      delete
+                      cancel
                     </button>
-                  ) : null}
-
-                  <button
-                    type="submit"
-                    className="btn btn-primary  btn-lg btn-block"
-                  >
-                    Submit
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={closeModal}
-                    className="btn btn-dark btn-lg btn-block"
-                  >
-                    cancel
-                  </button>
-                </div>
-              </Form>
-            )}
-          </Formik>
-        </div>
-      </Modal>
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          </div>
+        </Modal>
+      </DragDropContext>
     </>
   );
 }
