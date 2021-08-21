@@ -29,22 +29,9 @@ router.post('/update', AuthToken, async function (req, res, next) {
   res.send(data)
 })
 
-router.post('/chamgepassword', AuthToken, async function (req, res, next) {
-  let data = await AuthController.changepassword(req, res)
+router.post('/updateCompanyName', AuthToken, async function (req, res, next) {
+  let data = await AuthController.updateCompanyName(req, res)
   res.send(data)
 })
 
-router.get('/fogotpassword', async function (req, res) {
-  res.sendFile(path.resolve('./views/forgotpassword.html'))
-})
-
-router.post('/forgotpasswordrequest', async function (req, res) {
-  let data = await AuthController.forgotpasswordrequest(req, res)
-  res.send(data)
-})
-
-router.post('/forgotpage', async function (req, res) {
-  let data = await AuthController.forgotpassword(req, res)
-  res.send(data)
-})
 module.exports = router;

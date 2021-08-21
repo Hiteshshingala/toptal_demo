@@ -40,4 +40,10 @@ router.delete('/:refId', AuthToken,  async function (req, res, next) {
 
 })
 
+router.get('/getReservationList/:refId', AuthToken,  async function (req, res, next) {
+  // create a new promise inside of the async function
+  let data = await RestaurantController.getReservationList(req, res);
+  res.send(data)
+})
+
 module.exports = router;

@@ -12,6 +12,9 @@ var ReservationSchema = new Schema({
     noOfSeats: {
         type: Number
     },
+    contactNumber: {
+        type: String
+    },
     tableId: {
         type: String
     },
@@ -19,27 +22,9 @@ var ReservationSchema = new Schema({
         type: String,
         ref: 'restaurant'
     },
-
-
-
 },{
     timestamps: { createdAt: true, updatedAt: false }
 })
-
-
-// ReservationSchema.virtual('tableId', {
-//     ref: 'restaurant',
-//     localField: 'tableId',
-//     justOne: true,
-//     foreignField: 'bookings.tableId',
-// });
-
-// ReservationSchema.virtual('restaurantId', {
-//     ref: 'restaurant',
-//     localField: 'restaurantId',
-//     justOne: true,
-//     foreignField: '_id',
-// });
 
 
 ReservationSchema.pre('save', function(next) {

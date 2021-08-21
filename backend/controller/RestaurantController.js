@@ -41,15 +41,15 @@ module.exports = {
     },
 
     bookTable: function (req, res) {
-        const { refId, noOfSeats, name, reserveTime } = req.body;
-        const {_id, email, restaurantId} = req.userData;
-        console.log('@@reserveTime', moment(reserveTime).utc())
+        const { refId, noOfSeats, name, reserveTime, contactNumber } = req.body;
+        const { restaurantId} = req.userData;
         const bookTable  = ReservationModel.create({
             name: name, 
             time: moment(reserveTime).subtract(1, 'd').utc(),
             noOfSeats: noOfSeats, 
             tableId: refId,
-            restaurantId: restaurantId
+            restaurantId: restaurantId,
+            contactNumber: contactNumber
         })
         res.status(200)
         const response = responseService.success({msg: 'Reserve Table successfully', payload: bookTable})
@@ -63,7 +63,6 @@ module.exports = {
             })
             res.status(200)
             const response = await responseService.success({msg: 'Table Data get successfully', payload: bookTable})
-            console.log('@@response', response)
             resolve(response);
         })
     },
@@ -72,8 +71,6 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             const { refId, date } = req.body;
             const { restaurantId} = req.userData;
-            // let minDate = moment(date).utc().startOf('day');
-            // let maxDate = moment(date).utc().endOf('day');
             let minDate = moment(date).utc();//.subtract(1, 'd').utc();
             let maxDate = moment(date).add(2, 'd').utc();
             const reservationData  = await ReservationModel.find({
@@ -115,5 +112,22 @@ module.exports = {
             }
         })
     },
+    getReservationList: function (req, res) {
+        return new Promise(async (resolve, reject) => {
+            const { refId } = req.params;
+            const { restaurantId} = req.userData;
+            const data = await ReservationModel.find({restaurantId: restaurantId, tableId: refId}).sort({_id: -1});
+            if(data.length){
+                // const restaurant = await ReservationModel.create({restaurantId, name: name, time: Date.now(), noOfSeats: noOfSeats, tableId: refExist.bookings[existindex].tableNo})
+                res.status(200)
+                const response = responseService.success({msg: 'Table deleted successfully', payload: data})
+                resolve(response);
+            } else {
+                res.status(404)
+                const response = responseService.error({msg: 'No table found', payload: {}})
+                resolve(response);
+            }
+        })
+    }
 }
 
