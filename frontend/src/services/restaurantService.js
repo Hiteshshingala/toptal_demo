@@ -85,4 +85,20 @@ const deleteTables = async (data) => {
     }
   return false;  
 }
-export { addTable, getTableData, getTableBookings, reserveTables, deleteTables };
+
+const getTableBookingList = async (data) => {
+    let url = APIs.base_Url + `restaurant/getReservationList/${data.refId}`;
+    const method = "get";
+    const response = await api({
+        url: url,
+        method,
+        isTokenPass: true
+    });
+
+    if (response && response.status && response.status === 200) {
+        const { data } = response;
+        return data;
+    }
+  return false;  
+}
+export { addTable, getTableData, getTableBookings, reserveTables, deleteTables,getTableBookingList };

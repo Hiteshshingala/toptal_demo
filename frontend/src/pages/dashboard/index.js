@@ -7,17 +7,16 @@ import "./dashbord.css";
 function Dashboard() {
   const [isCompanyNameExist, setIsCompanyNameExist] = useState(false);
   useEffect(() => {
-    const compExist = checkCompanyNameExist();
-    setIsCompanyNameExist(compExist);
+    checkCompanyNameExist();
   }, []);
 
   const checkCompanyNameExist = () => {
     let user = localStorage.getItem("user");
     user = user ? JSON.parse(user) : user;
     if (user && user.restaurantName) {
-      return true;
+      setIsCompanyNameExist(true);
     } else {
-      return false;
+      setIsCompanyNameExist(false);
     }
   };
 
@@ -25,7 +24,7 @@ function Dashboard() {
     <>
             {!isCompanyNameExist ? (
               <>
-                <AddRestaurantName />
+                <AddRestaurantName checkCompanyNameExist={checkCompanyNameExist} />
               </>
             ) : (
               <>

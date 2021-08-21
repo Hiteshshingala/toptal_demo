@@ -99,21 +99,21 @@ function RestaurantLayout(pops) {
 
   const onDragEnd = (result) => {
     if (!result.destination) {
-        return;
+      return;
     }
-    console.log('@@result', result)
+    console.log("@@result", result);
     // const items = reorder(
     //     itemData,
     //     result.source.index,
     //     result.destination.index
     // );
     // setItemData(items);
-}
+  };
 
   return (
     <>
       <DragDropContext onDragEnd={onDragEnd}>
-        <Container>
+        <Container className="booking-width">
           {Array.from(Array(15).keys()).map((rowIndex) => (
             <Droppable droppableId="droppable">
               {(provided, snapshot) => (
@@ -123,7 +123,9 @@ function RestaurantLayout(pops) {
                       // {parseInt(`${rowIndex}${colIndex}`)}
                       <Draggable
                         key={`table_${rowIndex}${colIndex}`}
-                        draggableId={parseInt(`${rowIndex}${colIndex}`).toString()}
+                        draggableId={parseInt(
+                          `${rowIndex}${colIndex}`
+                        ).toString()}
                         index={`${rowIndex}${colIndex}`}
                       >
                         {(provided, snapshot) => (
@@ -202,29 +204,29 @@ function RestaurantLayout(pops) {
                     />
                   </div>
                   <div className="modal-footer">
-                    {modelData.noOfSeats > 0 ? (
+                    <div className="button-wrapper-left">
+                      {modelData.noOfSeats > 0 ? (
+                        <button
+                          type="button"
+                          onClick={deleteTable}
+                          className="btn btn-danger  btn-lg btn-block btn-wrapper"
+                        >
+                          delete
+                        </button>
+                      ) : null}
                       <button
                         type="button"
-                        onClick={deleteTable}
-                        className="btn btn-danger  btn-lg btn-block"
+                        onClick={closeModal}
+                        className="btn btn-dark btn-lg btn-block btn-wrapper"
                       >
-                        delete
+                        cancel
                       </button>
-                    ) : null}
-
+                    </div>
                     <button
                       type="submit"
-                      className="btn btn-primary  btn-lg btn-block"
+                      className="btn btn-primary  btn-lg btn-block btn-wrapper"
                     >
                       Submit
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={closeModal}
-                      className="btn btn-dark btn-lg btn-block"
-                    >
-                      cancel
                     </button>
                   </div>
                 </Form>

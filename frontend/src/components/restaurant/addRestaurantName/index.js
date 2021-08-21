@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { updateCompanyName } from "../../../services/userServices";
 
 
-function AddRestaurantName(pops) {
+function AddRestaurantName({checkCompanyNameExist}) {
 
     const handleSubmit = async (value) => {
         const id = getCompanyName();
@@ -16,12 +16,19 @@ function AddRestaurantName(pops) {
 
         const response = await updateCompanyName(data);
         if (response && response.success) {
-            toast.success(response.msg);
+          addCompanyNameOnlocalstorage(value.companyName)
+          toast.success(response.msg);
         } else {
-            toast.error(response.msg);
-          }
-
-    }   
+          toast.error(response.msg);
+        }
+        
+      }   
+      
+      const  addCompanyNameOnlocalstorage = (name) => {
+        let user = JSON.parse(localStorage.getItem("user"));
+        localStorage.setItem('user', JSON.stringify({...user, restaurantName: name}));
+      checkCompanyNameExist();
+    }
 
     const getCompanyName = () => {
         const user = JSON.parse(localStorage.getItem('user'));
