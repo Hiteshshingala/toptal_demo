@@ -98,10 +98,27 @@ function RestaurantLayout(pops) {
   });
 
   const onDragEnd = (result) => {
-    if (!result.destination) {
-      return;
+    const { source, destination, draggableId } = result;
+
+    // dropped outside the list
+    if (!destination) {
+        return;
     }
-    console.log("@@result", result);
+
+    if (destination.index && destination.droppableId) {
+      console.log("@@result", result);
+      const _refId = `table_${destination.index}${destination.droppableId}`
+      console.log('@@@@_refId', _refId)
+      const oldValue = restaurantsData[draggableId] || 0;
+      const targetValue = restaurantsData[_refId] || 0;
+      let newData = {};
+      newData[_refId] = oldValue;
+      newData[draggableId] = targetValue
+      setRestaurantsData({ ...restaurantsData, ...newData });
+      console.log("@@data", { ...restaurantsData, ...newData });
+  } else {
+  }
+
     // const items = reorder(
     //     itemData,
     //     result.source.index,
@@ -113,23 +130,27 @@ function RestaurantLayout(pops) {
   return (
     <>
       <DragDropContext onDragEnd={onDragEnd}>
-        <Container className="booking-width">
-          {Array.from(Array(15).keys()).map((rowIndex) => (
-            <Droppable droppableId="droppable">
+        <Container className="booking-width d-flex">
+          {Array.from(Array(10).keys()).map((colIndex, index) => (
+            <Row className="mr-2">
+            <Droppable droppableId={`${index}`}>
               {(provided, snapshot) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  <Row key={`table_${rowIndex}`}>
-                    {Array.from(Array(10).keys()).map((colIndex, index) => (
-                      // {parseInt(`${rowIndex}${colIndex}`)}
-                      <Draggable
-                        key={`table_${rowIndex}${colIndex}`}
-                        draggableId={parseInt(
-                          `${rowIndex}${colIndex}`
-                        ).toString()}
-                        index={`${rowIndex}${colIndex}`}
+                <div {...provided.droppableProps} {...provided.draggableProps} ref={provided.innerRef}>
+                  {provided.placeholder}
+                  <Col key={`table_${colIndex}`}>
+                    {Array.from(Array(15).keys()).map((rowIndex, j) => {
+                      const i = 'table_'+rowIndex+ colIndex;
+                      return(
+                    <Draggable
+                        key={i}
+                        draggableId={i.toString()}
+                        index={j}
                       >
                         {(provided, snapshot) => (
-                          <Col
+                          <Row
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
                             onClick={() => {
                               openModal(
                                 `table_${rowIndex}${colIndex}`,
@@ -138,23 +159,25 @@ function RestaurantLayout(pops) {
                               );
                             }}
                             key={`table_${rowIndex}${colIndex}`}
+                            className={'border-1px'}
                           >
+                              {provided.placeholder}
                             <div>
-                              TableId: Table_{rowIndex}
-                              {colIndex}
+                              TableId: Table_{rowIndex}{colIndex}
                             </div>
                             <div>
                               Seats :
                               {findNoOfSeats(`table_${rowIndex}${colIndex}`)}
                             </div>
-                          </Col>
+                          </Row>
                         )}
                       </Draggable>
-                    ))}
-                  </Row>
+                    )})}
+                  </Col>
                 </div>
               )}
             </Droppable>
+              </Row>
           ))}
         </Container>
         <Modal
