@@ -121,6 +121,7 @@ function ReserveTable() {
                 onClick={() => {
                   openModal(`table_${rowIndex}${colIndex}`, 0, "name");
                 }}
+                className={'border-1px mr-5px'}
                 key={`table_${rowIndex}${colIndex}`}
               >
                 Table_{rowIndex}

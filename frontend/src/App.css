@@ -93,7 +93,8 @@
   color: #fff !important;
 }
 .border-1px {
-  border: 1px solid #0064ff !important;
-  margin: 1rem;
-  display: block !important;
+  border: 1px solid black !important;
+}
+.mr-5px {
+  margin-right: 5px;
 }

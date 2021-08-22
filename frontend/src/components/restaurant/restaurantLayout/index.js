@@ -97,7 +97,7 @@ function RestaurantLayout(pops) {
     noOfSeats: Yup.string().required("Please No of seats"),
   });
 
-  const onDragEnd = (result) => {
+  const onDragEnd = async (result) => {
     const { source, destination, draggableId } = result;
 
     // dropped outside the list
@@ -106,25 +106,27 @@ function RestaurantLayout(pops) {
     }
 
     if (destination.index && destination.droppableId) {
-      console.log("@@result", result);
       const _refId = `table_${destination.index}${destination.droppableId}`
-      console.log('@@@@_refId', _refId)
       const oldValue = restaurantsData[draggableId] || 0;
       const targetValue = restaurantsData[_refId] || 0;
       let newData = {};
       newData[_refId] = oldValue;
       newData[draggableId] = targetValue
       setRestaurantsData({ ...restaurantsData, ...newData });
-      console.log("@@data", { ...restaurantsData, ...newData });
-  } else {
-  }
-
-    // const items = reorder(
-    //     itemData,
-    //     result.source.index,
-    //     result.destination.index
-    // );
-    // setItemData(items);
+      const sourceData = {
+        refId: _refId,
+        noOfSeats: oldValue,
+      };
+      const targetData = {
+        refId: draggableId,
+        noOfSeats: targetValue,
+      };
+      
+      console.log("@@sourceData", sourceData);
+      console.log("@@targetData", targetData);
+     addTable({ ...sourceData }); 
+     addTable({ ...targetData }); 
+    } 
   };
 
   return (
