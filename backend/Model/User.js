@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Restaurant = require('./Restaurant');
 
 var UserSchema = new Schema({
     email: {
@@ -35,6 +36,18 @@ var UserSchema = new Schema({
     }
 
 })
+
+UserSchema.pre("save", async function(next) {
+    var self = this;
+
+    if(!self.restaurantId) {
+        const newRestaurant = await Restaurant.create({});
+        self.restaurantId = newRestaurant._id;
+        next();
+    } else {
+        next();
+    }
+});
 
 const User = mongoose.model('users', UserSchema)
 module.exports = User;

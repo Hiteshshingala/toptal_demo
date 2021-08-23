@@ -14,10 +14,6 @@ router.post('/register',  async function (req, res, next) {
   res.send(data)
 })
 
-router.get('/verify', async function (req, res, next) {
-  let data = await AuthController.conformmail(req, res);
-  res.send(data);
-})
 
 router.post('/login', async function (req, res, next) {
   let data = await AuthController.login(req, res);
