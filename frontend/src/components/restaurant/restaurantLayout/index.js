@@ -121,9 +121,6 @@ function RestaurantLayout(pops) {
         refId: draggableId,
         noOfSeats: targetValue,
       };
-      
-      console.log("@@sourceData", sourceData);
-      console.log("@@targetData", targetData);
      addTable({ ...sourceData }); 
      addTable({ ...targetData }); 
     } 
