@@ -80,15 +80,9 @@ function Table({ refId }) {
     },
     {
       dataField: "time",
-      text: "Select Time for filter",
-      // filter: selectFilter ({
-      //   onFilter: filterByDate,
-      //   style: {
-      //     marginTop: "20px",
-      //   },
-      // }),
+      text: "Time for filter",
       formatter: (cell) => {
-        return <>{moment(cell).format('DD-MM-YYY hh:mm')}</>
+        return <>{moment(cell).add(1, 'day').format('DD-MM-YYYY hh:mm')}</>
       },
       filter: selectFilter({
         onFilter: filterByDate,

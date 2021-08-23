@@ -26,7 +26,7 @@ const Sign_Up = async ({ data } = { data: {} }) => {
     body: data,
   });
 
-  if (response && response.status && response.status === 200) {
+  if (response && response.status) {
     const { data } = response;
     return data;
   }

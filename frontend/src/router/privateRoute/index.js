@@ -10,7 +10,7 @@ const PrivetRouter = ({ component: Component, ...rest }) => (
     <Col xs={2} id="sidebar-wrapper">
       <SideBar />
     </Col>
-    <Col xs={12} id="page-content-wrapper">
+    <Col xs={10} id="page-content-wrapper">
     <Route
     {...rest}
     render={(props) =>

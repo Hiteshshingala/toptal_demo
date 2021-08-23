@@ -72,7 +72,7 @@ function AddRestaurantName({checkCompanyNameExist}) {
                 </div>
 
                 
-                <button type="submit" className="btn btn-primary btn-lg btn-block">
+                <button type="submit" className="btn btn-primary btn-lg btn-block mt-4">
                   Submit
                 </button>
               </Form>

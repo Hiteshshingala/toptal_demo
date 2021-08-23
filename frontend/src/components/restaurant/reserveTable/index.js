@@ -85,6 +85,7 @@ function ReserveTable() {
     const response = await reserveTables({ ...data });
     if (response && response.success) {
       toast.success(response.msg);
+      closeModal();
     } else {
       toast.error(response.msg);
     }
