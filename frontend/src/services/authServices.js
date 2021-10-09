@@ -17,7 +17,7 @@ const login = async ({ data } = { data: {} }) => {
   return false;
 };
 
-const Sign_Up = async ({ data } = { data: {} }) => {
+const signUp = async ({ data } = { data: {} }) => {
   let url = APIs.base_Url + 'users/';
   const method = "post";
   const response = await api({
@@ -33,11 +33,11 @@ const Sign_Up = async ({ data } = { data: {} }) => {
   return false;
 };
 
-const Sign_Out = async () => {
+const signOut = async () => {
   let url = APIs.base_Url + 'users/';
   const method = "delete";
   const response = await api({
-    url: url + "sign_out",
+    url: url + "signOut",
     method,
     isTokenPass: true
   });
@@ -49,4 +49,4 @@ const Sign_Out = async () => {
   return false;
 };
 
-export { login, Sign_Up, Sign_Out };
+export { login, signUp, signOut };

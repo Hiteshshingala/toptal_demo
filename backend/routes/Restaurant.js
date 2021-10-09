@@ -46,4 +46,28 @@ router.get('/getReservationList/:refId', AuthToken,  async function (req, res, n
   res.send(data)
 })
 
+router.get('/getReservationList', AuthToken,  async function (req, res, next) {
+  // create a new promise inside of the async function
+  let data = await RestaurantController.getReservationListByCompany(req, res);
+  res.send(data)
+})
+
+router.delete('/reservation/:reservationId', AuthToken,  async function (req, res, next) {
+  // create a new promise inside of the async function
+  let data = await RestaurantController.deleteReservation(req, res);
+  res.send(data)
+})
+
+router.get('/reservation/:reservationId', AuthToken,  async function (req, res, next) {
+  // create a new promise inside of the async function
+  let data = await RestaurantController.getReservationById(req, res);
+  res.send(data)
+})
+
+router.put('/reserveTable', AuthToken,  async function (req, res, next) {
+  // create a new promise inside of the async function
+  let data = await RestaurantController.updateTable(req, res);
+  res.send(data)
+})
+
 module.exports = router;

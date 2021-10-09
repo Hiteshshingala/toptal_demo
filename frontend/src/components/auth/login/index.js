@@ -3,6 +3,7 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { login } from "../../../services/authServices";
+import { saveToken, saveUser } from "../../../services/localStorage";
 // import { Validation } from "../../../constants";
 import "./login.css";
 
@@ -16,8 +17,9 @@ const Login = (pops) => {
     const response = await login({ data });
     if (response && response.success) {
       const token = response.tokendata;
-      localStorage.setItem('jwt', token);
-      localStorage.setItem('user', JSON.stringify(response.payload));
+      debugger
+      saveToken(token);
+      saveUser(response.payload);
       toast.success(response.msg);
       pops.history.push("/dashboard");
     } else {

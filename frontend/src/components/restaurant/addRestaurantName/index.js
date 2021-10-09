@@ -42,7 +42,7 @@ function AddRestaurantName({checkCompanyNameExist}) {
 
     const LoginSchema = Yup.object().shape({
           companyName: Yup.string()
-          .required("Please Enter your password")
+          .required("Please Enter company name")
       });
 
     return (

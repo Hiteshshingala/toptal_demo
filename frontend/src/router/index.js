@@ -6,6 +6,7 @@ import Login from "../components/auth/login";
 import SignUP from "../components/auth/register";
 import Dashboard from "../pages/dashboard";
 import ReserveTable from "../components/restaurant/reserveTable";
+import Report from "../components/report";
 import PrivetRouter from "./privateRoute";
 // import NavBar from "../../common/navBar";
 // import Footer from "../../common/footer/footer";
@@ -17,6 +18,7 @@ const Routers = () => (
       <Route exact path="/" component={Login}></Route>
       <Route  exact path="/login" component={Login}></Route>
       <Route  exact path="/sign-up" component={SignUP}></Route>
+      <Route  exact path="/report" component={Report}></Route>
       <PrivetRouter
         exact
         path="/dashboard"

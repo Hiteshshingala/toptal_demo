@@ -4,6 +4,8 @@ import RestaurantLayout from "../../components/restaurant/restaurantLayout";
 import SideBar from "../../components/sidebar";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import "./dashbord.css";
+import { getUserData } from '../../services/localStorage';
+
 function Dashboard() {
   const [isCompanyNameExist, setIsCompanyNameExist] = useState(false);
   useEffect(() => {
@@ -11,7 +13,7 @@ function Dashboard() {
   }, []);
 
   const checkCompanyNameExist = () => {
-    let user = localStorage.getItem("user");
+    let user = getUserData();
     user = user ? JSON.parse(user) : user;
     if (user && user.restaurantName) {
       setIsCompanyNameExist(true);
@@ -29,7 +31,6 @@ function Dashboard() {
             ) : (
               <>
                 <RestaurantLayout />
-                <div>this is Dashboard page</div>
               </>
             )}
     </>

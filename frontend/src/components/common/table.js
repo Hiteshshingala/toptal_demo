@@ -5,21 +5,11 @@ import filterFactory, {
   dateFilter,
   selectFilter 
 } from "react-bootstrap-table2-filter";
-import { getTableBookingList } from "../../services/restaurantService";
+import { getTableBookingList,  deleteTableBookingList} from "../../services/restaurantService";
 import moment from "moment-timezone";
+import { Button } from 'react-bootstrap'
 
-function Table({ refId }) {
-  const [bookingsData, setBookingsData] = useState([]);
-  useEffect(() => {
-    getBookingData();
-  }, []);
-
-  const getBookingData = async () => {
-    const resData = await getTableBookingList({ refId: refId });
-    if (resData.success && resData.payload) {
-      setBookingsData(resData.payload);
-    }
-  };
+function Table({ refId, getReservationById, bookingsData }) {
   const filterByDate = (filterVal, data) => {
     const  todayDate = moment();
     let future = [], past = [];
@@ -43,6 +33,21 @@ function Table({ refId }) {
     { value: 1, label: 'past' },
     { value: 2, label: 'future' }
   ]
+
+  const deleteReservation = (id) => {
+    deleteTableBookingList(id)
+  }
+  
+
+  const Action = ({id}) => {
+    return (
+      <>
+      {/* <button className="btn btn-danger btn-xs btn-block btn-wrapper"> Action </button> */}
+      <Button variant="danger" size="sm" onClick={(e) => {deleteReservation(id)}}>Delete</Button> 
+      <Button variant="dark" size="sm" onClick={(e) => {getReservationById(id)}}>Edit</Button>{' '}
+      </>
+    )
+  }
 
   const columns = [
     {
@@ -89,7 +94,16 @@ function Table({ refId }) {
         options: timeOptions
       })
     },
+    {
+      dataField: "_id",
+      text: "Action",
+      formatter: (cell) => {
+        return ( <Action id={cell}/> )
+      }
+    },
   ];
+
+
   return (
     <div>
       <BootstrapTable

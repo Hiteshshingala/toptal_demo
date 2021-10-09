@@ -22,6 +22,10 @@ var ReservationSchema = new Schema({
         type: String,
         ref: 'restaurant'
     },
+    isActive: {
+        type: Boolean,
+        default: true
+    },
 },{
     timestamps: { createdAt: true, updatedAt: false }
 })

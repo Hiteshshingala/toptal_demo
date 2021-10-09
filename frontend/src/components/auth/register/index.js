@@ -2,7 +2,8 @@ import React from "react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
-import { Sign_Up } from "../../../services/authServices";
+import { signUp } from "../../../services/authServices";
+import { saveToken, saveUser } from "../../../services/localStorage";
 // import { Validation } from "../../../constants";
 import "./register.css";
 
@@ -14,11 +15,11 @@ const Register = (pops) => {
         managerName: value.managerName
     };
 
-    const response = await Sign_Up({ data });
+    const response = await signUp({ data });
     if (response && response.success) {
       const token = response.tokendata;
-      localStorage.setItem('jwt', token);
-      localStorage.setItem('user', JSON.stringify(response.payload));
+      saveToken(token);
+      saveUser(response.payload);
       toast.success(response.msg);
       pops.history.push("/dashboard");
     } else {

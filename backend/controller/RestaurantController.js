@@ -49,12 +49,31 @@ module.exports = {
             noOfSeats: noOfSeats, 
             tableId: refId,
             restaurantId: restaurantId,
-            contactNumber: contactNumber
+            contactNumber: contactNumber,
+            isActive: true
         })
         res.status(200)
         const response = responseService.success({msg: 'Reserve Table successfully', payload: bookTable})
         return response;
     },
+
+    updateTable: async function (req, res) {
+        const { refId, noOfSeats, name, reserveTime, contactNumber, _id } = req.body;
+        const { restaurantId} = req.userData;
+        const bookTable  =  await ReservationModel.findOneAndUpdate({_id: _id},{
+            name: name, 
+            time: moment(reserveTime).subtract(1, 'd').utc(),
+            noOfSeats: noOfSeats, 
+            tableId: refId,
+            restaurantId: restaurantId,
+            contactNumber: contactNumber,
+            isActive: true
+        })
+        res.status(200)
+        const response = await responseService.success({msg: 'Booking updated successfully', payload: bookTable})
+        return response;
+    },
+
     getTable: function (req, res) {
         return new Promise(async (resolve, reject) => {
             const { restaurantId} = req.userData;
@@ -76,6 +95,7 @@ module.exports = {
             const reservationData  = await ReservationModel.find({
                 restaurantId: restaurantId,
                 tableId: refId,
+                isActive: true,
                 time: {
                     $gte: minDate,
                     $lt: maxDate
@@ -116,15 +136,63 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             const { refId } = req.params;
             const { restaurantId} = req.userData;
-            const data = await ReservationModel.find({restaurantId: restaurantId, tableId: refId}).sort({_id: -1});
+            const data = await ReservationModel.find({restaurantId: restaurantId, tableId: refId, isActive: true}).sort({_id: -1});
             if(data.length){
                 // const restaurant = await ReservationModel.create({restaurantId, name: name, time: Date.now(), noOfSeats: noOfSeats, tableId: refExist.bookings[existindex].tableNo})
                 res.status(200)
                 const response = responseService.success({msg: 'Table deleted successfully', payload: data})
                 resolve(response);
             } else {
-                res.status(404)
+                res.status(200)
                 const response = responseService.error({msg: 'No table found', payload: {}})
+                resolve(response);
+            }
+        })
+    },
+    getReservationListByCompany: function (req, res) {
+        return new Promise(async (resolve, reject) => {
+            const { restaurantId} = req.userData;
+            const data = await ReservationModel.find({restaurantId: restaurantId, isActive: true}).sort({_id: -1});
+            if(data.length){
+                // const restaurant = await ReservationModel.create({restaurantId, name: name, time: Date.now(), noOfSeats: noOfSeats, tableId: refExist.bookings[existindex].tableNo})
+                res.status(200)
+                const response = responseService.success({msg: 'Table deleted successfully', payload: data})
+                resolve(response);
+            } else {
+                res.status(200)
+                const response = responseService.error({msg: 'No table found', payload: {}})
+                resolve(response);
+            }
+        })
+    },
+    getReservationById: function (req, res) {
+        return new Promise(async (resolve, reject) => {
+            const { reservationId } = req.params;
+            const data = await ReservationModel.findOne({_id: reservationId});
+            if(data){
+                // const restaurant = await ReservationModel.create({restaurantId, name: name, time: Date.now(), noOfSeats: noOfSeats, tableId: refExist.bookings[existindex].tableNo})
+                res.status(200)
+                const response = responseService.success({msg: 'Table get successfully', payload: data})
+                resolve(response);
+            } else {
+                res.status(200)
+                const response = responseService.error({msg: 'No table found', payload: {}})
+                resolve(response);
+            }
+        })
+    },
+    deleteReservation: function (req, res) {
+        return new Promise(async (resolve, reject) => {
+            const { reservationId } = req.params;
+            const data = await ReservationModel.findOneAndUpdate({_id: reservationId}, {isActive: false}).sort({_id: -1});
+            if(data._id){
+                // const restaurant = await ReservationModel.create({restaurantId, name: name, time: Date.now(), noOfSeats: noOfSeats, tableId: refExist.bookings[existindex].tableNo})
+                res.status(200)
+                const response = responseService.success({msg: 'reservation deleted successfully', payload: data})
+                resolve(response);
+            } else {
+                res.status(404)
+                const response = responseService.error({msg: 'No reservation found', payload: {}})
                 resolve(response);
             }
         })
