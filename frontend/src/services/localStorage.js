@@ -28,8 +28,10 @@ export const loadState = () => {
   };
 
   export const saveToken = (token) => {
-    debugger
     localStorage.setItem('jwt', token);
+  }
+  export const getToken = () => {
+    return localStorage.getItem('jwt');
   }
   export const saveUser = (userData) => {
     localStorage.setItem('user', JSON.stringify(userData));

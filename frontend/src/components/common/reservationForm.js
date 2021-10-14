@@ -1,18 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import { getTableBookingListByCompany, getTableBookingById } from '../../services/restaurantService';
+import { getTableBookingById } from '../../services/restaurantService';
 import { toast } from "react-toastify";
-import { Container, Row, Col, Modal, Dropdown } from "react-bootstrap";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
-  addTable,
-  getTableData,
   getTableBookings,
   reserveTables,
-  updateTableBooking,
-  getTableBookingList
+  updateTableBooking
 } from "../../services/restaurantService";
 import moment from "moment-timezone";
 import * as Yup from "yup";
@@ -31,19 +26,10 @@ function ReservationForm({refId, close, data}) {
     _id: ''
   });
     useEffect(() => {
-  console.log('@@@bookingData1', bookingData)
 
       setBookingData({...data});
-        console.log('@@@data', data)
         SetIsData(true);
     }, [])
-    // const getBookingData = async () => {
-    //     const resData = await getTableBookingListByCompany();
-    //     if (resData.success && resData.payload) {
-    //       setBookingsData({...resData.payload});
-    //     }
-    //   };
-
       const handleSubmit = async (value) => {
         const data = {
           _id: value._id,
@@ -74,7 +60,13 @@ function ReservationForm({refId, close, data}) {
     
       
   let handleColor = (time) => {
-    return time.getHours() > 12 ? "text-success" : "text-error";
+    let isAvailable = true;
+    dateSlot.forEach(t => {
+      if(moment(time).isSame(t)){
+        isAvailable = false;
+      }
+    })
+    return (time.getHours() > 12 && isAvailable) ? "text-success" : "text-error";
   };
 
   const changedate = (selectedDate) => {
@@ -94,9 +86,9 @@ function ReservationForm({refId, close, data}) {
           _excludeTimeSlot.push(a);
         }
       });
-      debugger
-      console.log('@@@_excludeTimeSlot', _excludeTimeSlot)
       setDateSlot(_excludeTimeSlot);
+    } else {
+      console.log('time slot available')
     }
   };
     
@@ -106,7 +98,6 @@ function ReservationForm({refId, close, data}) {
     name: Yup.string().required("Please Enter Name"),
     contactNumber: Yup.string().required("Please Enter Contact Number"),
   });  
-  console.log('@@@bookingData', bookingData)
   const getReservationById = async (id) => {
     const resp = await getTableBookingById(id);
     if(resp && resp.success ){
@@ -193,7 +184,7 @@ function ReservationForm({refId, close, data}) {
                       changedate(date);
                     }}
                     minDate={moment().toDate()}
-                    excludeTimes={[moment().hours(17).minutes(0), moment().hours(18).minutes(0), moment().hours(19).minutes(0)]}
+                    excludeTimes={dateSlot}
                   />
                   <ErrorMessage
                     className="error-class"

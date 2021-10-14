@@ -1,24 +1,14 @@
-import React, { useState, useEffect, useMemo } from "react";
-import * as Yup from "yup";
-import { toast } from "react-toastify";
-import { Container, Row, Col, Modal, Dropdown } from "react-bootstrap";
-import DropdownButton from "react-bootstrap/DropdownButton";
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import DatePicker from "react-datepicker";
+import React, { useState } from "react";
+import { Container, Row, Col, Modal} from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import {
-  addTable,
-  getTableData,
   getTableBookings,
-  reserveTables,
   getTableBookingById,
-  updateTableBooking,
   getTableBookingList
 } from "../../../services/restaurantService";
 import moment from "moment-timezone";
 import Table from "../../common/table";
 import ReservationForm from "../../common/reservationForm";
-import { format, compareAsc } from 'date-fns'
 
 function ReserveTable() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -70,6 +60,8 @@ function ReserveTable() {
         }
       });
       setDateSlot(_excludeTimeSlot);
+    } else {
+      console.log('all time slot available')
     }
   };
 
@@ -129,114 +121,11 @@ function ReserveTable() {
                   Add Booking
                 </button>
               </div>
-              <Table bookingsData={bookingsData} refId={refId} getReservationById={getReservationById} />
+              <Table bookingsData={bookingsData} refId={refId} getReservationById={getReservationById} getBookingData={getBookingData}/>
             </div>
           </>
         ) : (
           <ReservationForm refId={refId} close={closeModal} data={bookingData}/>
-          // <Formik
-          //   initialValues={bookingData}
-          //   onSubmit={handleSubmit}
-          //   validationSchema={restaurantSchema}
-          // >
-          //   {({ isSubmitting, values, setFieldValue }) => (
-          //     <Form>
-          //       <div className="form-group">
-          //         <label>Ref ID</label>
-          //         <Field
-          //           type="text"
-          //           name="refId"
-          //           className="form-control"
-          //           disabled={true}
-          //         />
-          //         <ErrorMessage
-          //           className="error-class"
-          //           name="refId"
-          //           component="div"
-          //         />
-          //       </div>
-
-          //       <div className="form-group">
-          //         <label>No of Seat</label>
-          //         <Field
-          //           type="text"
-          //           name="noOfSeats"
-          //           className="form-control"
-          //         />
-          //         <ErrorMessage
-          //           className="error-class"
-          //           name="noOfSeats"
-          //           component="div"
-          //         />
-          //       </div>
-
-          //       <div className="form-group">
-          //         <label>Name</label>
-          //         <Field type="text" name="name" className="form-control" />
-          //         <ErrorMessage
-          //           className="error-class"
-          //           name="name"
-          //           component="div"
-          //         />
-          //       </div>
-
-          //       <div className="form-group">
-          //         <label>Contact No</label>
-          //         <Field
-          //           type="text"
-          //           name="contactNumber"
-          //           className="form-control"
-          //         />
-          //         <ErrorMessage
-          //           className="error-class"
-          //           name="contactNumber"
-          //           component="div"
-          //         />
-          //       </div>
-          //       <div className="form-group col-6 mb-4">
-          //         <label>Time</label>
-          //         <DatePicker
-          //           selected={values.reserveTime}
-          //           dateFormat="MMMM d yyyy HH:mm"
-          //           className="form-control"
-          //           name="reserveTime"
-          //           showTimeSelect
-          //           timeFormat="HH:mm"
-          //           timeIntervals={60}
-          //           timeCaption="time"
-          //           timeClassName={handleColor}
-          //           onChange={(date) => {
-          //             setFieldValue("reserveTime", date);
-          //             changedata(date);
-          //           }}
-          //           minDate={moment().toDate()}
-          //           excludeTimes={dateSlot}
-          //         />
-          //         <ErrorMessage
-          //           className="error-class"
-          //           name="reserveTime"
-          //           component="div"
-          //         />
-          //       </div>
-          //       <div className="modal-footer">
-          //         <button
-          //           type="submit"
-          //           className="btn btn-primary  btn-lg btn-block"
-          //         >
-          //           Submit
-          //         </button>
-
-          //         <button
-          //           type="button"
-          //           onClick={closeModal}
-          //           className="btn btn-dark btn-lg btn-block"
-          //         >
-          //           cancel
-          //         </button>
-          //       </div>
-          //     </Form>
-          //   )}
-          // </Formik>
         )}
       </Modal>
     </div>

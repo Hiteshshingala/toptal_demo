@@ -44,6 +44,8 @@ function RestaurantLayout(pops) {
         data[booking.tableNo] = booking.noOfSeats;
       });
       setRestaurantsData(data);
+    } else {
+      console.log(resData.msg)
     }
   };
 
@@ -158,7 +160,7 @@ function RestaurantLayout(pops) {
                               );
                             }}
                             key={`table_${rowIndex}${colIndex}`}
-                            className={'border-1px'}
+                            className={`border-1px ${findNoOfSeats('table_'+rowIndex+colIndex) != 0? "table_active": "table_deactive"}  ` }
                           >
                               {provided.placeholder}
                             <div>

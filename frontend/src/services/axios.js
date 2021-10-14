@@ -1,12 +1,13 @@
   
 import axios from "axios";
+import { getToken } from '../services/localStorage'
 
 const generateAxiosInstance = async (contentType = null, isToken = false) => {
   let header = {
     "content-type": contentType ? contentType : "application/json"
   }
   if(isToken) {
-    const token = localStorage.getItem('jwt');
+    const token = getToken();
     header.Authorization = `Bearer ${token}`
   }
   return new Promise((resolve) => {

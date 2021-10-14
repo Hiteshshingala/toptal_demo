@@ -79,6 +79,9 @@
   flex-direction: column;
   margin-top: 15px;
 }
+th{
+  vertical-align: baseline;
+}
 .btn-wrapper {
   height: 40px;
   display: flex;

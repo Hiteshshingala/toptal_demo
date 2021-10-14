@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import { toast } from "react-toastify";
 import { getTableBookingListByCompany, getTableBookingById } from '../../services/restaurantService';
 import Table from '../common/table'
 
@@ -11,9 +12,14 @@ function Report() {
     }, [])
     const getBookingData = async () => {
         const resData = await getTableBookingListByCompany();
-        console.log('@@@resData', resData)
-        if (resData.success && resData.payload) {
-          setBookingsData(resData.payload);
+        if (resData.success) {
+          if(resData.payload) {
+            setBookingsData(resData.payload);
+          } else {
+            console.log('No booking available')
+          }
+        } else {
+          toast.error('something went wrong');
         }
       };
 
@@ -27,8 +33,8 @@ function Report() {
   }
     return (
         <>
-            <h1>report</h1>
-            <Table bookingsData={bookingsData} refId={''} getReservationById={getReservationById} />
+            <h1>Report</h1>
+            <Table bookingsData={bookingsData} refId={''} getReservationById={false} type={'report'} getBookingData={getBookingData}/>
         </>
     )
 }

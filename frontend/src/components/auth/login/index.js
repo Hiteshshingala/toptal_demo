@@ -17,7 +17,6 @@ const Login = (pops) => {
     const response = await login({ data });
     if (response && response.success) {
       const token = response.tokendata;
-      debugger
       saveToken(token);
       saveUser(response.payload);
       toast.success(response.msg);

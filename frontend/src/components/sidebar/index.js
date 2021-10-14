@@ -4,23 +4,8 @@ import { Nav } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { getUserData } from '../../services/localStorage';
 
-function SideBar(props) {
+function SideBar({isCompanyNameExist}) {
   const history = useHistory();
-  const [isCompanyNameExist, setIsCompanyNameExist] = useState(false);
-  useEffect(() => {
-    checkCompanyNameExist();
-  }, []);
-
-  const checkCompanyNameExist = () => {
-    let user = getUserData();
-    user = user ? JSON.parse(user) : user;
-    if (user && user.restaurantName) {
-      setIsCompanyNameExist(true);
-    } else {
-      setIsCompanyNameExist(false);
-    }
-  };
-
   if(isCompanyNameExist) {
     return (
       <Nav

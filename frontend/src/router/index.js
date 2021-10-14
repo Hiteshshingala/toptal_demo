@@ -18,11 +18,15 @@ const Routers = () => (
       <Route exact path="/" component={Login}></Route>
       <Route  exact path="/login" component={Login}></Route>
       <Route  exact path="/sign-up" component={SignUP}></Route>
-      <Route  exact path="/report" component={Report}></Route>
       <PrivetRouter
         exact
         path="/dashboard"
         component={Dashboard}
+      ></PrivetRouter>
+      <PrivetRouter
+        exact
+        path="/report"
+        component={Report}
       ></PrivetRouter>
       <PrivetRouter
         exact

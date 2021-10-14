@@ -3,6 +3,7 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { updateCompanyName } from "../../../services/userServices";
+import { getUserData, saveUser } from "../../../services/localStorage";
 
 
 function AddRestaurantName({checkCompanyNameExist}) {
@@ -25,13 +26,14 @@ function AddRestaurantName({checkCompanyNameExist}) {
       }   
       
       const  addCompanyNameOnlocalstorage = (name) => {
-        let user = JSON.parse(localStorage.getItem("user"));
-        localStorage.setItem('user', JSON.stringify({...user, restaurantName: name}));
-      checkCompanyNameExist();
+        let user = getUserData();
+        user = JSON.parse(user);
+        saveUser({...user, restaurantName: name});
+        checkCompanyNameExist();
     }
 
     const getCompanyName = () => {
-        const user = JSON.parse(localStorage.getItem('user'));
+        const user = JSON.parse(getUserData());
         if(user && user._id) {
           return user._id;
         } else {
