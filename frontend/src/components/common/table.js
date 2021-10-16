@@ -16,7 +16,20 @@ import "react-datepicker/dist/react-datepicker.css";
 function Table({ refId, getReservationById, bookingsData, getBookingData, type }) {
   const [bookingsDataNew, setBookingsDataNew] = useState([])
   useEffect(() =>{
-    setBookingsDataNew(bookingsData);
+    let newData = [];
+    let tables = [];
+    if(bookingsData && Array.isArray(bookingsData) && bookingsData.length && bookingsData.length > 0) {
+      newData = bookingsData.map(el =>{
+        if(el.tableId && tables.includes(el.tableId)) {
+          el.tableIdNew = '';
+        } else {
+          el.tableIdNew = el.tableId;
+          tables.push(el.tableId);
+        }
+        return el;
+      })
+      setBookingsDataNew(newData);
+    }
   }, [, bookingsData]);
 
   const filterByDate = (filterVal, data) => {
@@ -77,23 +90,39 @@ function Table({ refId, getReservationById, bookingsData, getBookingData, type }
     if(start && end){
       let filteredData=[];
       bookingsData.forEach(date => {
-        if(moment(date.time).isBetween(moment(start).subtract(1, 'day'), moment(end).add(1, 'day'), undefined, '[]')){
+        if(moment(date.time).isBetween(moment(start).subtract(1, 'day'), moment(end), undefined, '[]')){
           filteredData.push(date);
         }
-      })
-      setBookingsDataNew(filteredData);
+      });
+      let newData = [];
+      let tables = [];
+      if(filteredData && Array.isArray(filteredData) && filteredData.length && filteredData.length > 0) {
+        newData = filteredData.map(el =>{
+          if(el.tableId && tables.includes(el.tableId)) {
+            el.tableIdNew = '';
+          } else {
+            el.tableIdNew = el.tableId;
+            tables.push(el.tableId);
+          }
+          return el;
+        })
+        setBookingsDataNew(newData);
+      } else {
+        setBookingsDataNew([]);
+      }
     }
   };
 
   const columns = [
     {
-      dataField: "tableId",
+      dataField: "tableIdNew",
       text: "Table Id",
       filter: textFilter({
         style: {
           marginTop: "20px",
         },
       }),
+      sort: true,
       hidden: type !== 'report',
       headerAlign: "center",
       align: "center",
