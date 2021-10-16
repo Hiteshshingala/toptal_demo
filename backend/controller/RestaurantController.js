@@ -152,7 +152,7 @@ module.exports = {
     getReservationListByCompany: function (req, res) {
         return new Promise(async (resolve, reject) => {
             const { restaurantId} = req.userData;
-            const data = await ReservationModel.find({restaurantId: restaurantId, isActive: true}).sort({_id: -1});
+            const data = await ReservationModel.find({restaurantId: restaurantId, isActive: true}).sort({tableId: 1});
             if(data.length){
                 // const restaurant = await ReservationModel.create({restaurantId, name: name, time: Date.now(), noOfSeats: noOfSeats, tableId: refExist.bookings[existindex].tableNo})
                 res.status(200)
